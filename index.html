@@ -424,6 +424,7 @@
                 </div>
 
                 <div class="flex flex-col gap-4">
+                    <p id="hint-text" class="text-center text-indaba-orange font-bold text-sm mb-2"></p>
                     <input type="text" id="inp-answer" placeholder="..." class="text-center font-bold text-lg dir-ltr">
 
                     <div class="grid grid-cols-1 gap-3">
@@ -572,18 +573,22 @@
         function drawTimerRing() { const pct = window.game.timeLeft / window.game.maxTime, cx = width / 2, cy = height / 2, radius = Math.min(width, height) * 0.45; ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(128,128,128,0.05)'; ctx.lineWidth = 6; ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy, radius, -Math.PI / 2, (-Math.PI / 2) + (Math.PI * 2 * pct)); ctx.strokeStyle = pct < 0.2 ? '#c1272d' : '#f7931e'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.stroke(); }
         window.addEventListener('resize', resize); resize(); drawBackground();
 
-        // ** MODIFIED MISSIONS DATA ** // Changed the last item type from 'reveal' to 'final_question'
-        // Added 'revealImg' property to hold the image URL for the win screen
+        // ** UPDATED MISSIONS DATA BASED ON IMAGE ** //
         const MISSIONS = {
             "mission_sam": {
                 name: "Mystery 1",
                 data: [
+                    // Level 1: Caesar Cipher
                     { type: 'text', content: "Gpdvt jt b gpsdf nvmujqmjfs po xpsk", hint: "شفرة قيصر (+1)", ans: "FOCUS IS A FORCE MULTIPLIER ON WORK", pts: 10, time: 240 },
-                    { type: 'img', content: "https://i.postimg.cc/28yNzmPC/Whats-App-Image-2025-10-28-at-03-06-32-1fc29a72.jpg", hint: "اسم الشركة؟", ans: "LOCATION BASED SOCIAL APP", pts: 5, time: 120 },
+                    // Level 2: Loopt (Updated Hint)
+                    { type: 'img', content: "https://i.postimg.cc/28yNzmPC/Whats-App-Image-2025-10-28-at-03-06-32-1fc29a72.jpg", hint: "ماذا يعني كل حرف من هذه الكلمة؟\nWhat does each letter of this word mean?", ans: "LOCATION BASED SOCIAL APP", pts: 5, time: 120 },
+                    // Level 3: Crack the Code
                     { type: 'img', content: "https://i.postimg.cc/ZKnzTZ1q/Whats-App-Image-2025-10-28-at-03-06-32-b3091846.jpg", hint: "اكسر الرمز", ans: "3841", pts: 15, time: 600 },
-                    { type: 'img', content: "https://i.postimg.cc/FszX9m2S/Whats-App-Image-2025-10-28-at-03-06-32-2c52cb2b.jpg", hint: "انتظر...", ans: null, pts: 0, time: 40 },
+                    // Level 4: Wait screen (Updated Hint)
+                    { type: 'img', content: "https://i.postimg.cc/FszX9m2S/Whats-App-Image-2025-10-28-at-03-06-32-2c52cb2b.jpg", hint: "...انتظر", ans: null, pts: 0, time: 40 },
+                    // Level 5: Address
                     { type: 'html', content: `<p class="font-bold">3180 18th Street,</p><p>San Francisco, CA</p>`, hint: "اسم المنظمة؟", ans: "OPEN AI", pts: 5, time: 180 },
-                    // Changed type to 'final_question'
+                    // Level 6: Final (Updated Hint)
                     { type: 'final_question', content: "Who is the character?", hint: "???", ans: "SAM ALTMAN", pts: 0, time: 999, revealImg: "https://i.postimg.cc/wTMY6HSv/Whats-App-Image-2025-10-28-at-03-06-32-bb976a41.jpg" }
                 ]
             },
@@ -595,7 +600,6 @@
                     { type: 'text', content: "1950", hint: "سنة اختبار تورينج", ans: "1950", pts: 15, time: 600 },
                     { type: 'text', content: "Wait...", hint: "Loading...", ans: null, pts: 0, time: 40 },
                     { type: 'html', content: "<p class='font-bold'>Bletchley Park, UK</p>", hint: "المكان؟", ans: "BLETCHLEY PARK", pts: 5, time: 180 },
-                    // Changed type to 'final_question'
                     { type: 'final_question', content: "Who is the character?", hint: "???", ans: "ALAN TURING", pts: 0, time: 999, revealImg: "https://placehold.co/300x300/e66d15/FFF?text=Turing" }
                 ]
             }
@@ -706,7 +710,7 @@
                 if (document.getElementById('val-score')) document.getElementById('val-score').innerText = this.state.score;
                 if (document.getElementById('val-level')) document.getElementById('val-level').innerText = this.state.levelIdx + 1;
 
-                const txtEl = document.getElementById('level-content-text'), imgEl = document.getElementById('level-content-img'), htmlEl = document.getElementById('level-content-html');
+                const txtEl = document.getElementById('level-content-text'), imgEl = document.getElementById('level-content-img'), htmlEl = document.getElementById('level-content-html'), hintEl = document.getElementById('hint-text');
                 if (txtEl) txtEl.innerText = "";
                 if (imgEl) imgEl.classList.add('hidden-d');
                 if (htmlEl) htmlEl.classList.add('hidden-d');
@@ -714,6 +718,11 @@
                 if (document.getElementById('inp-answer')) {
                     document.getElementById('inp-answer').value = "";
                     document.getElementById('inp-answer').disabled = false;
+                }
+
+                // Show Hint in UI
+                if (hintEl) {
+                    hintEl.innerText = levelData.hint || "";
                 }
 
                 if (levelData.type === 'text' || levelData.type === 'final_question') {
