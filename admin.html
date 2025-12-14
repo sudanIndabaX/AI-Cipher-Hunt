@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الألغاز - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'glass-dark': 'rgba(30, 41, 59, 0.95)',
+                        'primary-orange': '#e66d15',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Kufi+Arabic:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+        }
+
+        .control-btn {
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            border-color: #e66d15;
+            background-color: rgba(230, 109, 21, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white min-h-screen p-6">
+
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8 border-b border-slate-700 pb-4">
+            <h1 class="text-3xl font-bold text-primary-orange flex items-center gap-3">
+                <i class="fas fa-cogs"></i> غرفة التحكم
+            </h1>
+            <div
+                class="flex items-center gap-2 text-xs bg-slate-800 px-3 py-1.5 rounded-full text-green-400 border border-slate-700">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                متصل بالخادم
+            </div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="bg-slate-800/50 backdrop-blur p-6 rounded-2xl shadow-lg mb-8 border border-slate-700">
+            <h2 class="text-lg font-bold mb-4 text-slate-300">حالة اللعبة الحالية (ما يراه اللاعبون)</h2>
+            <div id="current-status"
+                class="text-center p-6 bg-slate-900 rounded-xl border-2 border-dashed border-slate-600 text-slate-400 text-xl font-mono font-bold transition-all duration-500">
+                <i class="fas fa-circle-notch fa-spin mr-2"></i> جاري جلب البيانات...
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <h2 class="text-xl font-bold mb-4 text-slate-300">خيارات التحكم:</h2>
+        <div class="grid gap-4">
+
+            <!-- Option 1: Let Users Choose -->
+            <button onclick="setMission('SELECTION_MODE')" id="btn-SELECTION_MODE"
+                class="control-btn group relative flex items-center p-5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-blue-500">
+                <div
+                    class="w-14 h-14 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-400 ml-4 group-hover:bg-blue-500 group-hover:text-white transition">
+                    <i class="fas fa-users text-2xl"></i>
+                </div>
+                <div class="text-right flex-1">
+                    <h3 class="font-bold text-lg text-white">وضع الاختيار الحر</h3>
+                    <p class="text-sm text-slate-400 group-hover:text-slate-300">يسمح للاعبين باختيار اللغز بأنفسهم في
+                        شاشة البداية.</p>
+                </div>
+                <div class="absolute left-5 text-blue-500 opacity-0 check-icon transition-all"><i
+                        class="fas fa-check-circle text-2xl"></i></div>
+            </button>
+
+            <!-- Option 2: Force Sam Altman -->
+            <button onclick="setMission('mission_sam')" id="btn-mission_sam"
+                class="control-btn group relative flex items-center p-5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-orange-500">
+                <div
+                    class="w-14 h-14 bg-orange-500/10 rounded-full flex items-center justify-center text-orange-400 ml-4 group-hover:bg-orange-500 group-hover:text-white transition">
+                    <i class="fas fa-robot text-2xl"></i>
+                </div>
+                <div class="text-right flex-1">
+                    <h3 class="font-bold text-lg text-white">فرض لغز "سام ألتمان"</h3>
+                    <p class="text-sm text-slate-400 group-hover:text-slate-300">يجبر جميع اللاعبين على دخول مسار الذكاء
+                        الاصطناعي.</p>
+                </div>
+                <div class="absolute left-5 text-orange-500 opacity-0 check-icon transition-all"><i
+                        class="fas fa-check-circle text-2xl"></i></div>
+            </button>
+
+            <!-- Option 3: Force Alan Turing -->
+            <button onclick="setMission('mission_turing')" id="btn-mission_turing"
+                class="control-btn group relative flex items-center p-5 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-transparent hover:border-purple-500">
+                <div
+                    class="w-14 h-14 bg-purple-500/10 rounded-full flex items-center justify-center text-purple-400 ml-4 group-hover:bg-purple-500 group-hover:text-white transition">
+                    <i class="fas fa-code text-2xl"></i>
+                </div>
+                <div class="text-right flex-1">
+                    <h3 class="font-bold text-lg text-white">فرض لغز "آلان تورينج"</h3>
+                    <p class="text-sm text-slate-400 group-hover:text-slate-300">يجبر جميع اللاعبين على دخول مسار فك
+                        الشفرات.</p>
+                </div>
+                <div class="absolute left-5 text-purple-500 opacity-0 check-icon transition-all"><i
+                        class="fas fa-check-circle text-2xl"></i></div>
+            </button>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-slate-600 text-xs">
+            IndabaX Sudan &copy; 2025 | Admin Panel v2.0
+        </div>
+
+        <!-- Feedback Toast -->
+        <div id="toast"
+            class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-full shadow-2xl hidden transition-all translate-y-10 opacity-0 flex items-center gap-2 z-50">
+            <i class="fas fa-check-circle"></i> <span>تم تحديث الإعدادات بنجاح!</span>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // إعدادات المشروع الجديد (P2)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDTuocX-lCYRMrgFQLnSzKcpnQnL2sLHs0",
+            authDomain: "ai-cipher-hunt-p2.firebaseapp.com",
+            projectId: "ai-cipher-hunt-p2",
+            storageBucket: "ai-cipher-hunt-p2.firebasestorage.app",
+            messagingSenderId: "539746998922",
+            appId: "1:539746998922:web:579ec59bc94a0a4d9aab73",
+            measurementId: "G-ENP1QLMEKD"
+        };
+
+        // تحديد APP_ID بشكل ديناميكي
+        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId;
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // المسار الصحيح (مع المجلد status لتفادي خطأ الأجزاء الفردية)
+        const configDocRef = doc(db, "artifacts", APP_ID, "public", "data", "game_config", "status");
+
+        async function init() {
+            try {
+                await signInAnonymously(auth);
+
+                // الاستماع للتغييرات الحالية لتحديث الواجهة
+                onSnapshot(configDocRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        updateUI(docSnap.data().active_mission_id);
+                    } else {
+                        updateUI('SELECTION_MODE');
+                    }
+                }, (error) => {
+                    console.error("Error listening to config:", error);
+                    document.getElementById('current-status').innerText = "خطأ في الاتصال: " + error.message;
+                    document.getElementById('current-status').classList.add('text-red-500', 'border-red-500');
+                });
+            } catch (e) {
+                console.error("Auth Error:", e);
+            }
+        }
+
+        function updateUI(activeId) {
+            const statusEl = document.getElementById('current-status');
+
+            // تصفير حالة الأزرار
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active', 'border-current');
+                btn.querySelector('.check-icon').style.opacity = '0';
+            });
+
+            let text = "غير معروف";
+            let styleClasses = "";
+
+            if (activeId === 'SELECTION_MODE') {
+                text = "حرية الاختيار (مفعل)";
+                styleClasses = "text-blue-400 border-blue-500/50";
+                activateBtn('btn-SELECTION_MODE');
+            } else if (activeId === 'mission_sam') {
+                text = "لغز سام ألتمان (إجباري)";
+                styleClasses = "text-orange-400 border-orange-500/50";
+                activateBtn('btn-mission_sam');
+            } else if (activeId === 'mission_turing') {
+                text = "لغز آلان تورينج (إجباري)";
+                styleClasses = "text-purple-400 border-purple-500/50";
+                activateBtn('btn-mission_turing');
+            }
+
+            // تحديث كارت الحالة
+            statusEl.innerHTML = `<i class="fas fa-broadcast-tower mr-2"></i> ${text}`;
+            statusEl.className = `text-center p-6 bg-slate-900 rounded-xl border-2 font-mono font-bold text-xl transition-all duration-300 shadow-inner ${styleClasses}`;
+        }
+
+        function activateBtn(btnId) {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.classList.add('active');
+                btn.querySelector('.check-icon').style.opacity = '1';
+            }
+        }
+
+        window.setMission = async (missionId) => {
+            // تأثير بصري فوري
+            const btn = document.getElementById('btn-' + missionId);
+            if (btn) btn.classList.add('opacity-75');
+
+            try {
+                await setDoc(configDocRef, {
+                    active_mission_id: missionId,
+                    updated_at: new Date().toISOString(),
+                    updated_by: auth.currentUser ? auth.currentUser.uid : 'unknown'
+                });
+                showToast();
+            } catch (error) {
+                console.error("Error setting mission:", error);
+                alert("حدث خطأ: " + error.message);
+            } finally {
+                if (btn) btn.classList.remove('opacity-75');
+            }
+        };
+
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.remove('hidden');
+            // Animation In
+            setTimeout(() => {
+                t.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            // Animation Out
+            setTimeout(() => {
+                t.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => t.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
